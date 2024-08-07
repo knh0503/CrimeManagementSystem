@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X_UA_Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_police_manager.css') }}">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="{{ url_for('static', filename='script_citizen.js') }}" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>    
+    <title>Citizen</title>
+</head>
+<body>
+    <nav class="nav">
+        <div class="logo">
+            <a href="/"><img src="/static/police.png" height="50px"></a>
+        </div>
+        <ul class="nav_menu">
+            <li id="inquiry_crime_menu">지역별 범죄 조회</a></li>
+            <li id="notify_crime_menu">신고</a></li>
+            <li id="inquiry_offender_location_menu">범죄자 신상 정보 조회</a></li>
+            <li id="witness_victim_inquiry_menu">범죄자 신상 정보 조회(목격자, 피해자)</a></li>
+        </ul>
+    </nav>  
+
+    <div id = "inquiry_crime" class="container">
+        <h3>현재 거주 중인 지역에서 발생한 범죄를 조회합니다.</h3>
+        <form id = "check_id_form">
+            <label for="citizen_id">시민 ID를 입력해주세요 (fae0027) : </label>
+            <input type="text" name = "citizen_id" id = "citizen_id">
+            <button id="check_region_button" type="submit">입력</button>
+        </form>
+        <br>
+        <form id = 'inquiry_crime_form'>
+            <input type="hidden" name="region" id="region">
+            <label for="crime_type">조회할 범죄 유형을 선택해주세요 : </label>
+            <select id="crime_type" name="crime_type" style="width: 150px;">
+                <option value="1">모두</option>
+                <option value="2">살인</option>
+                <option value="3">성범죄</option>
+                <option value="4">납치 및 인신매매</option>
+                <option value="5">강도</option>
+                <option value="6">절도</option>
+                <option value="7">폭행</option>
+                <option value="8">마약 매매 및 소지</option>
+                <option value="9">사기</option>
+                <option value="10">방화</option>
+                <option value="11">기타</option>
+            </select>
+            <label for="start_date">시작 날짜를 입력해주세요 (2012-01-01)</label>
+            <input type="date" name="start_date" id="start_date" required>
+            <label for="end_date">완료 날짜를 입력해주세요 (2017-01-18)</label>
+            <input type="date" name="end_date" id="end_date" required>
+            <button id = 'crime_type_button' type="submit">선택</button>
+        </form>
+        <div class = "table_container">
+            <table class="tg" id = "inquiry_crime_table" style="display: none;">
+                <thead>
+                    <tr>
+                        <th class = "tg-7btt">ID</th>
+                        <th class = "tg-7btt">DATE</th>
+                        <th class = "tg-7btt">BLOCK</th>
+                        <th class = "tg-7btt">LOCATION</th>     
+                        <th class = "tg-7btt">ARREST</th>                     
+                    </tr>
+                </thead>
+                <tbody id="inquiry_crime_table_body"></tbody>
+            </table>
+        </div>
+        <br>
+    </div>
+    
+    <div id="notify_crime" class="container">
+        <form id = "notify_crime_form">
+            <h3>신고 내용을 입력해주세요.</h3>
+            <label for="date">날짜를 입력해주세요</label>
+            <input type="date" name="date" id="date" required>
+            <label for="details">자세한 신고 내용을 적어주세요 : </label>
+            <input type="text" name = "details" id = "details" required>
+            <label for="caller_id">신고자 ID를 일력해주세요 : </label>
+            <input type="text" name = "caller_id" id = "caller_id" required>
+            <button id="notify_crime_button" type="submit">증거물 등록</button>
+        </form>
+    </div>
+
+    <div id="inquiry_offender_location" class="container">
+        <h3>수배자의 신상은 마지막 목격 지역에 거주하고 있는 시민들에 한해 공개됩니다.</h3>
+        <form id = "inquiry_offender_location_form">
+            <label for="citizen_id">시민 ID를 입력해주세요 (fae0027) : </label>
+            <input type="text" name = "citizen_id" id = "citizen_id">
+            <button id="inquiry_offender_location_button" type="submit">입력</button>
+        </form>
+        <br>
+        <div class = "table_container">
+            <table class="tg" id = "inquiry_offender_location_table" style="display: none;">
+                <thead>
+                    <tr>
+                        <th class = "tg-7btt">이름</th>
+                        <th class = "tg-7btt">성별</th>
+                        <th class = "tg-7btt">나이</th>
+                        <th class = "tg-7btt">마지막 날짜</th>     
+                        <th class = "tg-7btt">범행</th>                     
+                    </tr>
+                </thead>
+                <tbody id="inquiry_offender_location_table_body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="witness_victim_inquiry" class="container">
+        <h3>목격자와 피해자에 해당하는 사건의 가해자의 신상 정보를 확인할 수 있습니다.</h3>
+        <form id = "witness_victim_inquiry_form">
+            <select id="type" name="type" style="width: 150px;">
+                <option value="witness">목격자</option>
+                <option value="victim">피해자</option>
+            </select>
+            <label for="id">ID를 입력해주세요 (vt202408) : </label>
+            <input type="text" name = "id" id = "id">
+            <button id="witness_victim_inquiry_button" type="submit">조회</button>
+        </form>
+        <br>
+        <div class = "table_container">
+            <table class="tg" id = "witness_victim_inquiry_crime_table" style="display: none;">
+                <h3>범죄 정보</h3>
+                <thead>
+                    <tr>
+                        <th class = "tg-7btt">ID</th>
+                        <th class = "tg-7btt">날짜</th>
+                        <th class = "tg-7btt">Region</th>
+                        <th class = "tg-7btt">Block</th>
+                        <th class = "tg-7btt">Location Description</th>
+                        <th class = "tg-7btt">범죄 유형</th>                        
+                    </tr>
+                </thead>
+                <tbody id="witness_victim_inquiry_crime_table_body"></tbody>
+            </table>
+        </div>
+        <br>
+        
+        <div class = "table_container">
+            <table class="tg" id = "witness_victim_inquiry_offender_table" style="display: none;">
+                <h3>용의자 정보</h3>
+                <thead>
+                    <tr>
+                        <th class = "tg-7btt">이름</th>
+                        <th class = "tg-7btt">성별</th>
+                        <th class = "tg-7btt">나이</th>
+                        <th class = "tg-7btt">수배 여부</th>
+                        <th class = "tg-7btt">위치</th>
+                        <th class = "tg-7btt">위치 전송 날짜</th>                        
+                    </tr>
+                </thead>
+                <tbody id="witness_victim_inquiry_offender_table_body"></tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+
+</html>

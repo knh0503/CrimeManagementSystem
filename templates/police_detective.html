@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X_UA_Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_police_manager.css') }}">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="{{ url_for('static', filename='script_police_detective.js') }}" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>    
+    <title>Police_Detective</title>
+</head>
+<body>
+    <nav class="nav">
+        <div class="logo">
+            <a href="/"><img src="/static/police.png" height="50px"></a>
+        </div>
+        <ul class="nav_menu">
+            <li id="view_police_investigation_menu">조사 조회</a></li>
+            <li id="enroll_evidence_menu">증거물 등록</a></li>
+            <li id="enroll_witness_menu">증인 및 목격자 등록</a></li>
+            <li id="enroll_victim_menu">피해자 등록</a></li>
+        </ul>
+    </nav>  
+
+    <form action="/change">
+        <button id="change_button" type="submit">investigation 경찰 변경</button>
+    </form>
+
+    <div id = "view_police_investigation" class="container">
+        <form id = "police_investigation_form">
+            <h3>현재 담당 중인 사건에 대한 조사 목록을 조회합니다.</h3>
+            <label for="police_id">담당 형사의 id를 입력해주세요 (6606692280) : </label>
+            <input type="text" name = "police_id" id = "police_id">
+            <button id="police_investigation_form_button" type="submit">조사 조회</button>
+        </form>
+        <br>
+        <div class = "table_container">
+            <table class="tg" id = "investigation_table" style="display: none;">
+                <thead>
+                    <tr>
+                        <th class = "tg-7btt">ID</th>
+                        <th class = "tg-7btt">시작 날짜</th>
+                        <th class = "tg-7btt">완료 날짜</th>
+                        <th class = "tg-7btt">상세</th>                        
+                    </tr>
+                </thead>
+                <tbody id="investigation_table_body"></tbody>
+            </table>
+        </div>
+        <br>
+    </div>
+    
+    <div id="enroll_evidence" class="container">
+        <form id = "enroll_evidence_form">
+            <h3>현재 담당 중인 사건에 대하여 증거물을 등록합니다.</h3>
+            <label for="investigation_id">담당하고 있는 조사의 ID를 입력하세요 (23695082) : </label>
+            <input type="text" name = "investigation_id" id = "investigation_id" required>
+            <div class="form-group">
+                <label for="evidence_type">증거물 종류를 선택해주세요 : </label>
+                <select id="evidence_type" name="evidence_type" style="width: 150px;">
+                    <option value="evd001">Photo</option>
+                    <option value="evd002">CCTV</option>
+                    <option value="evd003">Fingerprint</option>
+                    <option value="evd004">DNA Sample</option>
+                    <option value="evd005">Weapon</option>
+                    <option value="evd006">Document</option>
+                    <option value="evd007">Blood Stain</option>
+                    <option value="evd008">Clothing Fiber</option>
+                </select>
+                <span class="help-icon" id = "help-icon" onclick="toggleTooltip('type_help')"><img src="/static/question_mark.png" height="15px"></span>
+                    <div id="type_help" class="tooltip" style="white-space: pre;">
+                    evd001  Photo           Photo of the crime scene.
+                    evd002  CCTV            CCTV footage from nearby area.
+                    evd003  Fingerprint     Fingerprint found at the crime scene.
+                    evd004  DNA Sample      DNA sample collected from the crime scene.
+                    evd005  Weapon          Weapon found near the crime scene.
+                    evd006  Document        Important document related to the case.
+                    evd007  Blood Stain     Blood stain discovered on clothing at the crime scene.
+                    evd008  Clothing Fiber  Fiber collected from a suspect's clothing.</div>
+            </div>
+            <label for="date">날짜를 입력해주세요</label>
+            <input type="date" name="date" id="date" required>
+            <button id="enroll_evidence_button" type="submit">증거물 등록</button>
+        </form>
+    </div>
+
+    <div id="enroll_witness" class="container">
+        <form id = "enroll_witness_form">
+            <h3>현재 담당 중인 사건에 대하여 목격자를 등록합니다.</h3>
+            <label for="investigation_id">담당하고 있는 조사의 ID를 입력하세요 (23695082) : </label>
+            <input type="text" name = "investigation_id" id = "investigation_id" required>
+            <label for="name">성함을 입력해주세요</label>
+            <input type="text" name="name" id="name" required>
+            <label for="gender">성별을 입력해주세요</label>
+            <label style="display: inline;"><input type="radio" name="gender" id="gender" value="M">남성</label>
+            <label style="display: inline;"><input type="radio" name="gender" id="gender" value="F">여성</label>
+            <label for="age">나이를 입력해주세요</label>
+            <input type="text" name="age" id="age" required>
+            <button id="enroll_evidence_button" type="submit">목격자 등록</button>
+        </form>
+    </div>
+
+    <div id="enroll_victim" class="container">
+        <form id = "enroll_victim_form">
+            <h3>현재 담당 중인 사건에 대하여 피해자를 등록합니다.</h3>
+            <label for="investigation_id">담당하고 있는 조사의 ID를 입력하세요 (23695082) : </label>
+            <input type="text" name = "investigation_id" id = "investigation_id" required>
+            <label for="name">성함을 입력해주세요</label>
+            <input type="text" name="name" id="name" required>
+            <label for="gender">성별을 입력해주세요</label>
+            <label style="display: inline;"><input type="radio" name="gender" id="gender" value="M">남성</label>
+            <label style="display: inline;"><input type="radio" name="gender" id="gender" value="F">여성</label>
+            <label for="age">나이를 입력해주세요</label>
+            <input type="text" name="age" id="age" required>
+            <button id="enroll_evidence_button" type="submit">피해자 등록</button>
+        </form>
+    </div>
+
+</body>
+
+</html>

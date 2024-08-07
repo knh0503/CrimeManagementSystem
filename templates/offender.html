@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X_UA_Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_police_manager.css') }}">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="{{ url_for('static', filename='script_offender.js') }}" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>    
+    <title>Offender</title>
+</head>
+<body>
+    <nav class="nav">
+        <div class="logo">
+            <a href="/"><img src="/static/police.png" height="50px"></a>
+        </div>
+    </nav>  
+
+    <div id = "transfer_location" class="container" style="display: block;">
+        <h3>위치 정보를 갱신합니다. 잘못된 정보 기입 시 추가 조사가 필요하므로 주의해 주시기 바랍니다.</h3>
+        <form id = "transfer_location_form">
+            <label for="offender_id">피의자 id를 입력해주세요. (8811029) : </label>
+            <input type="text" name = "offender_id" id = "offender_id">
+            <label for="current_region">현재 위치를 입력하세요 : </label>
+            <input type="text" name = "current_region" id = "current_region">
+            <button id="transfer_location_button" type="submit">입력</button>
+        </form>
+    </div>
+
+</body>
+
+</html>

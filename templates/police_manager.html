@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X_UA_Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_police_manager.css') }}">
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="{{ url_for('static', filename='script_police_manager.js') }}" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>    <title>police_manager</title>
+</head>
+<body>
+    <nav class="nav">
+        <div class="logo">
+            <a href="/"><img src="/static/police.png" height="50px"></a>
+        </div>
+        <ul class="nav_menu">
+            <li id="change_region_button">경찰 근무지 변경</a></li>
+            <li id="enroll_crime_button">신규 범죄 등록</a></li>
+            <li id="view_change_offender_button">수배자 목록 조회 및 변경</a></li>
+            <li id="enroll_investigation_button">신규 조사 등록</a></li>
+        </ul>
+    </nav>  
+
+    <div id="change_region" class="container">
+        <h3>경찰 인력 배치</h3>
+        <lable for="old_region">어떤 지역의 인원 배치를 변경하시겠습니까?</lable>
+        <select id="old_region">
+            <script>
+                for (var i = 0; i <= 77; i++) {
+                    document.write(`<option value="${i}">${i}</option>`);
+                }
+            </script>
+        </select>
+        <button onclick="load_police()">선택</button>
+        <br><br>
+        
+        <div class = "table_container">
+            <table class="tg" id = "change_region_table" style="display: none;">
+                <thead>
+                    <tr>
+                        <th class = "tg-7btt">ID</th>
+                        <th class = "tg-7btt">이름</th>
+                        <th class = "tg-7btt">전화번호</th>
+                        <th class = "tg-7btt">발령</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody" style="width: 100%;"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="enroll_crime" class="container">
+        <h3>신고 접수 목록을 출력합니다.</h3>
+        <div class = "table_container">
+            <table class="tg">
+                <thead>
+                    <tr>
+                        <th class = "tg-7btt">ID</th>
+                        <th class = "tg-7btt">날짜</th>
+                        <th class = "tg-7btt">범죄 유형</th>
+                        <th class = "tg-7btt">목격자</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody_report"></tbody>
+            </table>
+        </div>
+        <br>
+        <form id="enroll_crime_form" method="post">
+            <label for="offender_id">용의자 id를 입력해주세요(int4 : 123456789)</label>
+            <input type="text" name="offender_id" id="offender_id">
+            <label for="id">사건 id를 입력해주세요(varchar : HX123456)</label>
+            <input type="text" name="id" id="id" required>
+            <label for="date">날짜를 입력해주세요</label>
+            <input type="date" name="date" id="date" required>
+            <label for="block">블록을 입력해주세요 ex: 013XX W 112TH ST</label>
+            <input type="text" name="block" id="block" required>
+            <label for="iucr">사건 유형을 입력해주세요 ex: homicice = 0110</label>
+            <input type="text" name="iucr" id="iucr" required>
+            <label for="location_description">사건 발생 장소를 입력해주세요 ex: STREET</label>
+            <input type="text" name="location_description" id="location_description" required>
+            <label for="region">지역을 입력해주세요 ex: 1</label>
+            <input type="text" name="region" id="region" required>
+            <label for="arrest">체포 여부를 입력해주세요</label>
+            <input type="checkbox" name="arrest" id="arrest" value="arrest" onclick='toggleTextbox(this)'>
+            <div style="display: none;" id="offender_info">
+                <label for="name">이름을 입력해주세요</label>
+                <input type="text" name="name" id="name">      
+                <label for="gender">성별을 입력해주세요</label>
+                <label style="display: inline;"><input type="radio" name="gender" id="gender" value="M">남성</label>
+                <label style="display: inline;"><input type="radio" name="gender" id="gender" value="F">여성</label>
+                <label for="age">나이를 입력해주세요</label>
+                <input type="text" name="age" id="age"> 
+            </div>
+            <br><br>
+            <button type="submit" id="enroll_crime_form_button">제출</button>
+        </form>
+    </div>
+
+    <div id="view_change_offender" class="container">
+        <h3>수배자 목록 조회 및 변경</h3>
+        <form id="region_offender_form">
+            <label for="region_offender">조회하고자 하는 지역을 선택해주세요:</label>
+            <select id="region_offender" name="region_offender">
+                <script>
+                    for (var i = 0; i <= 77; i++) {
+                        document.write(`<option value="${i}">${i}</option>`);
+                    }
+                </script>
+            </select>
+            <button type="submit">선택</button>
+        </form>
+        <br>
+
+        <h3>최근 위치 정보 갱신으로부터 한달이 지난 범죄자들의 목록을 출력합니다.</h3>
+        <div class = "table_container" id = "offender_table" style="display: none;">
+            <table class="tg">
+                <thead>
+                    <tr>
+                        <th class = "tg-7btt">ID</th>
+                        <th class = "tg-7btt">마지막 위치 등록일</th>
+                    </tr>
+                </thead>
+                <tbody id="offender_table_body"></tbody>
+            </table>
+        </div><br>
+        <div id="result_message"></div><br>
+        <div class = "table_container" id = "police_table" style="display: none;">
+            <h3>위험도 증가로 인한 긴급 인력 배치 목록입니다.</h3>
+            <table class="tg">
+                <thead>
+                    <tr>
+                        <th class = "tg-7btt">ID</th>
+                        <th class = "tg-7btt">police_station_id</th>
+                        <th class = "tg-7btt">phone_number</th>
+                    </tr>
+                </thead>
+                <tbody id="police_table_body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="enroll_investigation" class="container">
+        <h3>조사 미완료 사건 목록을 조회합니다.</h3>
+        <div class = "table_container" id = "non_investigation_crime_table">
+            <table class="tg">
+                <thead>
+                    <tr>
+                        <th class = "tg-7btt">id</th>
+                        <th class = "tg-7btt">date</th>
+                        <th class = "tg-7btt">iucr</th>
+                        <th class = "tg-7btt">arrest</th>
+                        <th class = "tg-7btt">region_id</th>
+                    </tr>
+                </thead>
+                <tbody id="non_investigation_crime_table_body"></tbody>
+            </table>
+        </div>
+        <br>
+        <form id = "investigation_form">
+            <p>조사 미완료 사건에 대하여 담당 조사관을 파견하시겠습니까?<br>
+                해당 사건에 대한 조사 id와 담당 조사관은 자동으로 배치됩니다.<br>
+                담당 조사관은 해당 사건이 일어난 지역의 경찰관 중 랜덤하게 배치됩니다.
+            </p>
+            <button id="investigation_button" type="submit">Continue</button>
+        </form>
+        <br>
+        <div id = "investigation_result"></div>
+        <br>
+        <div class = "table_container" id = "investigation_table" style="display: none;">
+            <h3>미조사 사건에 대하여 10건의 조사관 파견를 완료하였습니다.</h3>
+            <table class="tg">
+                <thead>
+                    <tr>
+                        <th class = "tg-7btt">조사 번호</th>
+                        <th class = "tg-7btt">사건 id</th>
+                        <th class = "tg-7btt">시작 날짜</th>
+                        <th class = "tg-7btt">완료 날짜</th>
+                        <th class = "tg-7btt">담당 형사 id</th>
+                    </tr>
+                </thead>
+                <tbody id="investigation_table_body"></tbody>
+            </table>
+        </div>
+        
+    </div>
+
+</body>
+
+</html>

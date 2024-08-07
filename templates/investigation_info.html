@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X_UA_Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_police_manager.css') }}">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="{{ url_for('static', filename='script_investigation_info.js') }}" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>    
+    <title>investigation_info</title>
+</head>
+<body>
+    <script>var investigation_id = '{{ investigation_id }}';</script>
+    <nav class="nav">
+        <div class="logo">
+            <a href="/"><img src="/static/police.png" height="50px"></a>
+        </div>
+    </nav>  
+
+    <div id="investigation_info" class="container" style="display: block;">
+        <h3>해당 조사에 대한 정보를 출력합니다.</h3>
+        <h3>사건 정보</h3>
+        <div class = "table_container">
+            <table class="tg" id = "crime_table">
+                <thead>
+                    <tr>
+                        <th class = "tg-7btt">용의자 id</th>
+                        <th class = "tg-7btt">사건 id</th>
+                        <th class = "tg-7btt">날짜</th>
+                        <th class = "tg-7btt">block</th> 
+                        <th class = "tg-7btt">IUCR</th>
+                        <th class = "tg-7btt">장소</th>
+                        <th class = "tg-7btt">체포 여부</th>
+                        <th class = "tg-7btt">지역</th>                        
+                    </tr>
+                </thead>
+                <tbody id="crime_table_body">{{ crime_info_html|safe }}</tbody>
+            </table>
+        </div>
+        <br>
+        <h3>증거물 정보</h3>
+        <div class = "table_container">
+            <table class="tg" id = "evidence_table">
+                <thead>
+                    <tr>
+                        <th class = "tg-7btt">ID</th>
+                        <th class = "tg-7btt">Evidence Type</th>
+                        <th class = "tg-7btt">날짜</th>                     
+                    </tr>
+                </thead>
+                <tbody id="evidence_table_body">{{ evidence_info_html|safe }}</tbody>
+            </table>
+        </div>
+        <br>
+        <h3>증인 정보</h3>
+        <div class = "table_container">
+            <table class="tg" id = "witness_table">
+                <thead>
+                    <tr>
+                        <th class = "tg-7btt">ID</th>
+                        <th class = "tg-7btt">이름</th>
+                        <th class = "tg-7btt">성별</th>                        
+                        <th class = "tg-7btt">나이</th> 
+                    </tr>
+                </thead>
+                <tbody id="witness_table_body">{{ witness_info_html|safe }}</tbody>
+            </table>
+        </div>
+        <br>
+        <h3>피해자 정보</h3>
+        <div class = "table_container">
+            <table class="tg" id = "victim_table">
+                <thead>
+                    <tr>
+                        <th class = "tg-7btt">ID</th>
+                        <th class = "tg-7btt">이름</th>
+                        <th class = "tg-7btt">성별</th>                        
+                        <th class = "tg-7btt">나이</th> 
+                    </tr>
+                </thead>
+                <tbody id="victim_table_body">{{ victim_info_html|safe }}</tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+
+</html>

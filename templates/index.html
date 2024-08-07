@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>
+            {{title}}
+        </title>
+    </head>
+    <body>
+        <h1>
+            hello
+        </h1>
+        <h5>
+            <style type="text/css">
+                .tg  {border-collapse:collapse;border-color:#ccc;border-spacing:0;}
+                .tg td{background-color:#fff;border-color:#ccc;border-style:solid;border-width:1px;color:#333;
+                  font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;word-break:normal;}
+                .tg th{background-color:#f0f0f0;border-color:#ccc;border-style:solid;border-width:1px;color:#333;
+                  font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+                .tg .tg-baqh{text-align:center;vertical-align:top}
+                .tg .tg-amwm{font-weight:bold;text-align:center;vertical-align:top}
+                </style>
+                <table class="tg">
+                <thead>
+                  <tr>
+                    <th class="tg-amwm">id</th>
+                    <th class="tg-amwm">범죄 위험도</th>
+                    <th class="tg-amwm">범죄 빈도</th>
+                    <th class="tg-amwm">경찰서</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for i in datalist %}
+                    <tr>
+                        <td class="tg-baqh">{{ i[0] }}</td>
+                        <td class="tg-baqh">{{ i[1] }}</td>
+                        <td class="tg-baqh">{{ i[2] }}</td>
+                        <td class="tg-baqh">{{ i[3] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+            </h5>
+    </body>
+</html>

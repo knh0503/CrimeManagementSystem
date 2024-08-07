@@ -1,0 +1,207 @@
+/* static/style_police_manager.css */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #00055f;
+    height: 80px;
+}
+
+.nav div {
+    padding: 8px 10px;
+    margin: 0;
+}
+
+.nav_menu {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding-left: 0;
+}
+
+
+.nav_menu li {
+    padding: 8px 30px;
+    margin: 0;
+    color: #ffffff;
+}
+
+.nav_menu li:hover{
+    color: #bbbbbb;
+    cursor: pointer;
+    
+}
+
+.container {
+    margin: 20px;
+    display: none;
+}
+
+.table_container {
+    max-height: 300px;
+    width: 100%;
+    overflow-y:auto;
+}  
+
+.tg  {
+    width: 100%;
+    height: 100%;
+    table-layout: fixed;
+    border-collapse:collapse;
+    border-color:#aaaaaaa3;
+    border-spacing:0;
+    display: table;
+}
+
+.tg thead{
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    table-layout: fixed;
+    box-sizing: border-box;
+    display: table;
+}
+
+.tg tbody{
+    width: 100%;
+    table-layout: fixed;
+    box-sizing: border-box;
+    display: table;
+}
+
+.tg td{
+    background-color:#fff;
+    border-color:#aaaaaa00;
+    border-style:solid;
+    border-width:1px;
+    color:#333;
+    font-family:Arial, sans-serif;
+    font-size:14px;
+    overflow:hidden;
+    padding:10px 10px;
+    word-break:normal;
+    box-sizing: border-box;
+}
+
+.tg th{
+    background-color:#d4a643a8;
+    border-color:#ffffff00;
+    border-style:solid;
+    border-width:1px;
+    color:#fff;
+    font-family:Arial, sans-serif;
+    font-size:14px;
+    font-weight:normal;
+    overflow:hidden;
+    padding:10px 10px;
+    word-break:normal;
+    box-sizing: border-box;
+}
+
+.tg .tg-c3ow{border-color:inherit;
+    text-align:center;
+    vertical-align:center;
+}
+
+.tg .tg-7btt{
+    border-color:inherit;
+    font-weight:bold;
+    text-align:center;
+    vertical-align:center;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+}
+
+select {
+    width: 50px; /* �ʺ� ���� */
+    padding: 5px; /* ���� ���� �߰� */
+    font-size: 16px; /* ��Ʈ ũ�� ���� */
+    border: 1px solid #ccc; /* �׵θ� ���� */
+    border-radius: 4px; /* �׵θ� �𼭸��� �ձ۰� ���� */
+    box-sizing: border-box; /* �׵θ��� ���� �е��� �����Ͽ� ����� ��ü ũ�� ��� */
+    margin-bottom: 10px; /* �Ʒ��� ���� �߰� */
+}
+
+button {
+    padding: 5px 10px; /* ���� �е� �߰� */
+    font-size: 14px; /* ��Ʈ ũ�� ���� */
+    border: none; /* �׵θ� ���� */
+    background-color: #c09f599d; /* ���� ���� */
+    color: #fff; /* ���ڻ� ���� */
+    border-radius: 4px; /* �׵θ� �𼭸��� �ձ۰� ���� */
+    cursor: pointer; /* ���콺 Ŀ���� �����ͷ� ���� */
+}
+
+/* ��ư�� ȣ�� ȿ�� �߰� */
+button:hover {
+    background-color: #c09f59d5; /* ȣ���� ���� ���� */
+}
+
+form {
+    background-color: #ffffff95;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+input[type="text"],
+input[type="date"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+input[type="checkbox"],
+input[type="radio"] {
+    margin-right: 5px;
+}
+#offender_info {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    position: relative;
+}
+.help-icon {
+    cursor: pointer;
+    margin-left: 5px;
+}
+.tooltip {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 4px;
+    top: 30px;  /* 수정 */
+    left: 180px;  /* 수정 */
+    max-width: 700px;
+    z-index: 1000;
+    white-space: pre-wrap;
+    font-size: 0.9em;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+caption {
+    caption-side: top;
+  }
