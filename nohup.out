@@ -1,0 +1,47 @@
+ * Serving Flask app 'run'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.11.101:5000
+[33mPress CTRL+C to quit[0m
+1.252.128.118 - - [17/Aug/2024 10:21:45] "GET / HTTP/1.1" 200 -
+1.252.128.118 - - [17/Aug/2024 10:21:45] "[36mGET /static/script.js HTTP/1.1[0m" 304 -
+1.252.128.118 - - [17/Aug/2024 10:21:45] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+1.252.128.118 - - [17/Aug/2024 10:21:50] "POST /login HTTP/1.1" 200 -
+1.252.128.118 - - [17/Aug/2024 10:21:50] "[36mGET /static/script.js HTTP/1.1[0m" 304 -
+1.252.128.118 - - [17/Aug/2024 10:21:50] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+1.252.128.118 - - [17/Aug/2024 10:26:10] "POST /login HTTP/1.1" 200 -
+1.252.128.118 - - [17/Aug/2024 10:26:10] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+1.252.128.118 - - [17/Aug/2024 10:26:10] "[36mGET /static/script.js HTTP/1.1[0m" 304 -
+1.252.128.118 - - [17/Aug/2024 10:26:14] "POST /login HTTP/1.1" 200 -
+1.252.128.118 - - [17/Aug/2024 10:26:15] "[36mGET /static/script.js HTTP/1.1[0m" 304 -
+1.252.128.118 - - [17/Aug/2024 10:26:15] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+1.252.128.118 - - [17/Aug/2024 10:26:30] "GET / HTTP/1.1" 200 -
+1.252.128.118 - - [17/Aug/2024 10:26:30] "[36mGET /static/script.js HTTP/1.1[0m" 304 -
+1.252.128.118 - - [17/Aug/2024 10:26:30] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+ * Serving Flask app 'run'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.11.101:5000
+[33mPress CTRL+C to quit[0m
+1.252.128.118 - - [17/Aug/2024 10:30:07] "POST /login HTTP/1.1" 200 -
+1.252.128.118 - - [17/Aug/2024 10:30:07] "[36mGET /static/script.js HTTP/1.1[0m" 304 -
+1.252.128.118 - - [17/Aug/2024 10:30:07] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+1.252.128.118 - - [17/Aug/2024 10:30:12] "GET / HTTP/1.1" 200 -
+1.252.128.118 - - [17/Aug/2024 10:30:12] "[36mGET /static/script.js HTTP/1.1[0m" 304 -
+1.252.128.118 - - [17/Aug/2024 10:30:12] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+1.252.128.118 - - [17/Aug/2024 10:32:03] "GET / HTTP/1.1" 200 -
+1.252.128.118 - - [17/Aug/2024 10:32:03] "[36mGET /static/script.js HTTP/1.1[0m" 304 -
+1.252.128.118 - - [17/Aug/2024 10:32:03] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+1.252.128.118 - - [17/Aug/2024 10:32:07] "GET / HTTP/1.1" 200 -
+1.252.128.118 - - [17/Aug/2024 10:32:07] "[36mGET /static/script.js HTTP/1.1[0m" 304 -
+1.252.128.118 - - [17/Aug/2024 10:32:07] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+1.252.128.118 - - [17/Aug/2024 10:32:10] "POST /login HTTP/1.1" 200 -
+1.252.128.118 - - [17/Aug/2024 10:32:10] "[36mGET /static/script.js HTTP/1.1[0m" 304 -
+1.252.128.118 - - [17/Aug/2024 10:32:10] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+1.252.128.118 - - [17/Aug/2024 10:39:19] "GET / HTTP/1.1" 200 -
+1.252.128.118 - - [17/Aug/2024 10:39:20] "[36mGET /static/script.js HTTP/1.1[0m" 304 -
+1.252.128.118 - - [17/Aug/2024 10:39:20] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
