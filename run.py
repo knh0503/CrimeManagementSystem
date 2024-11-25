@@ -24,7 +24,7 @@ def connectDB(USER,pwd):
             dbname="crimemanagementsystem",
             user=USER, 
             password=pwd, 
-            host="localhost", 
+            host="0.0.0.0", 
             port="5432")
         # make cursor
         cur = conn.cursor()
