@@ -34,7 +34,18 @@ document.getElementById("enroll_investigation_button").addEventListener("click",
     print_non_investigation_list();
 });
 
+document.getElementById("crime_risk_prediction_button").addEventListener("click", function() {
+    var containers = document.getElementsByClassName("container");
+    for (var i = 0; i < containers.length; i++) {
+        containers[i].style.display = "none";
+    }
+    document.getElementById("crime_risk_prediction").style.display = "block";
+});
 
+function re_enter() {
+    document.getElementById("crime_risk_prediction_form").style.display = "block";
+    document.getElementById("prediction_result").style.display = "block";
+}
 
 function load_police() {
     document.getElementById('change_region_table').style.display = 'block';
@@ -137,25 +148,15 @@ $(document).ready(function() {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById("enroll_crime_form").addEventListener('submit', function(e) {
+    document.getElementById("crime_risk_prediction_form").addEventListener('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
-        
-        // 체크박스의 상태에 관계없이 'arrest' 값을 항상 포함
-        if (!formData.has('arrest')) {
-            formData.append('arrest', 'false');
-        } else {
-            formData.set('arrest', 'true');
-        }
 
-        axios.post('/enroll_crime', formData)
+        axios.post('/crime_risk_prediction', formData)
             .then(function(response) {
-                swal.fire({
-                    html: response.data.replace(/&lt;br&gt;/g, '<br>').replace(/&lt;/g, '<').replace(/&gt;/g, '>'),
-                    icon: "info",
-                    showCloseButton: true,
-                    confirmButtonText: "확인"
-                });
+                document.getElementById("crime_risk_prediction_form").style.display = "none";
+                document.getElementById("prediction_result").style.display = "block";
+                document.getElementById("prediction_result").innerHTML = response.data;
             })
             .catch(function(error) {
                 console.error('Error:', error);

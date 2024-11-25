@@ -3,11 +3,18 @@ from flask import Flask, redirect, flash, request, render_template, render_templ
 from itertools import islice
 from functools import wraps
 import string
+import joblib
+from datetime import datetime, timedelta
+import pandas as pd
 
 global alert_msg
 
 app = Flask(__name__)
 app.secret_key = '1234'
+
+# crime_predictor_model 로드
+with open("crime_predictor_model.pkl","rb") as f:
+    model = joblib.load(f)
 
 def connectDB(USER,pwd):
     global conn,cur
@@ -117,7 +124,8 @@ def citizen():
 def offender():
     return render_template('offender.html')
 
-
+###############################
+# police_manager
 #get_police
 @app.route("/get_police")
 @with_transaction
@@ -179,7 +187,6 @@ def get_report_list(cur):
     for report in reports:
         report_msg += """<tr><td class='tg-c3ow' id='report_id'>{}</td><td class='tg-c3ow' id='date'>{}</td><td class='tg-c3ow' id='crime_type'>{}</td><td class='tg-c3ow' id='witness'>{}</td></tr>""".format(report[0], report[1], report[2], report[3])
     return report_msg
-
 
 @app.route('/enroll_crime', methods=['POST'])
 @with_transaction
@@ -250,8 +257,6 @@ def enroll_crime(cur):
     alert_msg += change_risk_level(region)[0]
 
     return alert_msg
-
-
 
 def sort_by_second_value(data):
     return sorted(data, key=lambda x: x[1], reverse=True)
@@ -434,6 +439,93 @@ def get_non_investigation_list(cur):
         html_msg += f"<tr><td class='tg-c3ow' id='id'>{crime[1]}</td><td class='tg-c3ow' id='date'>{crime[2]}</td><td class='tg-c3ow' id='iucr'>{crime[4]}</td><td class='tg-c3ow' id='arrest'>{crime[6]}</td><td class='tg-c3ow' id='region_id'>{crime[7]}</td></tr>"
     return html_msg
 
+def get_week_of_month(date_obj):
+    # 해당 월의 첫 날
+    first_day_of_month = date_obj.replace(day=1)
+    
+    # 첫 번째 주의 시작 날짜 (월요일 기준으로 계산)
+    start_of_week = first_day_of_month - timedelta(days=first_day_of_month.weekday())
+    
+    # 주 번호 계산
+    delta_days = (date_obj - start_of_week).days
+    week_number = (delta_days // 7) + 1
+    return week_number
+
+def predict_crime_count(region, month, week, day_of_week):
+
+    # 요일을 원하는 순서로 인코딩 (일월화수목금토 = 0123456)
+    day_mapping = {
+        'Sunday' : 0,
+        'Monday' : 1,
+        'Tuesday' : 2,
+        'Wednesday' : 3,
+        'Thursday' : 4,
+        'Friday' : 5,
+        'Saturday' : 6
+    }
+
+    # 요일을 인코딩된 숫자로 변환
+    day_encoded = day_mapping[day_of_week]
+
+    # 예측 수행
+    prediction = model.predict([[region, month, week, day_encoded]])[0]
+    return round(prediction, 2)
+
+@app.route("/crime_risk_prediction", methods=['POST'])
+@with_transaction
+def crime_risk_prediction(cur):
+    region = request.form['region']
+    date_str = request.form['date']
+    date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+
+    # 월, 주, 요일 추출
+    month = date_obj.month
+    week_number = get_week_of_month(date_obj)  # 해당 월의 주 번호
+    weekday = date_obj.strftime('%A')  # 요일 이름 (예: Sunday)
+    
+    # 요일을 원하는 순서로 인코딩 (일월화수목금토 = 0123456)
+    day_mapping = {
+        'Sunday' : 0,
+        'Monday' : 1,
+        'Tuesday' : 2,
+        'Wednesday' : 3,
+        'Thursday' : 4,
+        'Friday' : 5,
+        'Saturday' : 6
+    }
+
+    # 요일을 인코딩된 숫자로 변환
+    day_encoded = day_mapping[weekday]
+
+    # 학습 시 사용한 특성 이름
+    feature_names = ['region', 'month', 'week', 'day_of_week_encoded']
+
+    # 예측 데이터를 DataFrame으로 변환
+    input_data = pd.DataFrame([[region, month, week_number, day_encoded]], columns=feature_names)
+
+    # 예측 수행
+    prediction = model.predict(input_data)[0]
+    result = round(prediction, 2)
+    
+    # 범죄 횟수 통계 : 25% : 15회, 50%: 30회, 75%:65회
+    if (result<=15):
+        result_html = f"""  <img src="/static/safe.png" height="100px">
+                            <p>{region}번 지역에서 {date_str}에 예측된 범죄 횟수는 {result}번입니다.</p>
+                            <button onclick="re_enter">다시 입력</button>
+                        """
+    elif (result<=65):
+        result_html = f"""  <img src="/static/caution.png" height="100px">
+                            <p>{region}번 지역에서 {date_str}에 예측된 범죄 횟수는 {result}번입니다.</p>
+                            <button onclick="re_enter">다시 입력</button>
+                        """
+    else:
+        result_html = f"""  <img src="/static/danger.png" height="100px">
+                            <p>{region}번 지역에서 {date_str}에 예측된 범죄 횟수는 {result}번입니다.</p>
+                            <button onclick="re_enter">다시 입력</button>
+                        """
+
+    # 결과를 HTML에 전달
+    return result_html
 
 #######################
 #  Police_Detective
@@ -832,4 +924,4 @@ def transfer_location(cur):
 
 
 if __name__=='__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
