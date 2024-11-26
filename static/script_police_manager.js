@@ -44,7 +44,7 @@ document.getElementById("crime_risk_prediction_button").addEventListener("click"
 
 function re_enter() {
     document.getElementById("crime_risk_prediction_form").style.display = "block";
-    document.getElementById("prediction_result").style.display = "block";
+    document.getElementById("prediction_result").style.display = "none";
 }
 
 function load_police() {

@@ -1,5 +1,5 @@
 import psycopg2, random, sys, traceback
-from flask import Flask, redirect, flash, request, render_template, render_template_string, url_for, jsonify, session, g
+from flask import Flask, redirect, request, render_template, url_for, jsonify, session, g
 from itertools import islice
 from functools import wraps
 import string
@@ -24,7 +24,7 @@ def connectDB(USER,pwd):
             dbname="crimemanagementsystem",
             user=USER, 
             password=pwd, 
-            host="0.0.0.0", 
+            host="localhost",  # 로컬에서 작업할 때는 localhost, AWS 작업할 때는 0.0.0.0 설정 -> 티스토리 참고
             port="5432")
         # make cursor
         cur = conn.cursor()
@@ -511,17 +511,17 @@ def crime_risk_prediction(cur):
     if (result<=15):
         result_html = f"""  <img src="/static/safe.png" height="100px">
                             <p>{region}번 지역에서 {date_str}에 예측된 범죄 횟수는 {result}번입니다.</p>
-                            <button onclick="re_enter">다시 입력</button>
+                            <button onclick="re_enter()">다시 입력</button>
                         """
     elif (result<=65):
         result_html = f"""  <img src="/static/caution.png" height="100px">
                             <p>{region}번 지역에서 {date_str}에 예측된 범죄 횟수는 {result}번입니다.</p>
-                            <button onclick="re_enter">다시 입력</button>
+                            <button onclick="re_enter()">다시 입력</button>
                         """
     else:
         result_html = f"""  <img src="/static/danger.png" height="100px">
                             <p>{region}번 지역에서 {date_str}에 예측된 범죄 횟수는 {result}번입니다.</p>
-                            <button onclick="re_enter">다시 입력</button>
+                            <button onclick="re_enter()">다시 입력</button>
                         """
 
     # 결과를 HTML에 전달
