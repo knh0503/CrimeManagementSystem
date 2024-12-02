@@ -179,22 +179,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         axios.post('/predict_offender_location', formData)
         .then(function(response) {
-            const mapContainer = document.getElementById('map_container');
-            if (response.data.map_html) {
-                // 새로운 iframe 요소 생성
-                const iframe = document.createElement('iframe');
-                iframe.srcdoc = response.data.map_html;  // map HTML을 iframe의 srcdoc으로 삽입
-                iframe.width = '100%';
-                iframe.height = '600px';
-                iframe.style.border = 'none';
-    
-                // 기존 콘텐츠를 지우고 iframe 추가
-                mapContainer.innerHTML = '';
-                mapContainer.appendChild(iframe);
-                console.log("Map successfully loaded into #map-container");
-            } else {
-                console.error("Map HTML is empty");
-            }
+            const map_html = response.data.map_html;
+
+            const newWindow = window.open('', '', 'width=800,height=600');
+            newWindow.document.title = '용의자 위치 정보';
+            newWindow.document.write(map_html);
+            newWindow.document.close();
         })
         .catch(function(error) {
             console.error('Error:', error);

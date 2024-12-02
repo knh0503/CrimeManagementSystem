@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 import numpy as np
 import folium
+from scipy.spatial import distance
 
 global alert_msg
 
@@ -706,6 +707,18 @@ def predict_location_model(age, gender, height, weight, prev_lat, prev_long):
     prediction = location_model.predict(X_pred)[0]
     return np.round(prediction, 2)
 
+@with_transaction
+def get_closest_regions(cur, latitude, longitude):
+    cur.execute(f"select region_name, country_name, latitude, longitude from region")
+    region_data = cur.fetchall()
+    region_dist = []
+    for region_name, country_name, lat, long in region_data:
+        dist = distance.euclidean([latitude, longitude], [lat, long])
+        region_dist.append((region_name, country_name, lat, long, dist))
+    sorted_region_dist = sorted(region_dist, key=lambda x: x[4])
+    closest_3_regions = sorted_region_dist[:3]
+    return closest_3_regions
+
 @app.route("/predict_offender_location", methods=['POST'])
 @with_transaction
 def predict_offender_location(cur):
@@ -719,27 +732,24 @@ def predict_offender_location(cur):
     result = predict_location_model(age, gender, height, weight, prev_lat, prev_long)
     latitude, longitude = result[0], result[1]
 
-    # region_data.csv 파일 읽기
-    region_data = pd.read_csv('region_data.csv')
-    
-    # 서울 중심 좌표
-    seoul_center = [37.5665, 126.9780]
-
     # 지도 생성 및 마커 추가
-    m = folium.Map(location=seoul_center, zoom_start=1)
-    for index, row in region_data.iterrows():
-        if (-90 <= row['latitude'] <= 90) and (-180 <= row['longitude'] <= 180):
-            folium.Marker(
-                location=[row['latitude'], row['longitude']],
-                popup=f"Region {row['id']}",
-                tooltip=f"Region {row['id']}"
-            ).add_to(m)
-    
+    m = folium.Map(location=[latitude, longitude], zoom_start=5)
+
     folium.Marker(
         location=[latitude, longitude],
-        popup=f"용의자 추정 위치",
-        tooltip=f"용의자 추정 위치"
+        popup=f"용의자 추정 위치\n[{latitude}, {longitude}]"
         ).add_to(m)
+
+    closest_3_regions = get_closest_regions(latitude, longitude)
+    for region_name, country_name, latitude, longitude, dist in closest_3_regions:
+            folium.CircleMarker(
+                location=[latitude, longitude],
+                popup=f"{region_name}, {country_name}",
+                radius=50,
+                color="red",
+                fill=True,
+                fill_color="white"
+            ).add_to(m)
 
     # 지도 HTML 파일로 저장하고 내용을 읽기
     m.save('templates/predict_offender_location_map.html')
