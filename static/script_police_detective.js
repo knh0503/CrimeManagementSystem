@@ -30,6 +30,14 @@ document.getElementById("enroll_victim_menu").addEventListener("click", function
     document.getElementById("enroll_victim").style.display = "block";
 });
 
+document.getElementById("predict_offender_location_menu").addEventListener("click", function() {
+    var containers = document.getElementsByClassName("container");
+    for (var i = 0; i < containers.length; i++) {
+        containers[i].style.display = "none";
+    }
+    document.getElementById("predict_offender_location").style.display = "block";
+});
+
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById("police_investigation_form").addEventListener('submit', function(e) {
         document.getElementById("investigation_table").style.display = "block";
@@ -147,6 +155,46 @@ document.addEventListener('DOMContentLoaded', function() {
                 showCloseButton: true,
                 confirmButtonText: "확인"
             });
+        })
+        .catch(function(error) {
+            console.error('Error:', error);
+            let errorMessage = "오류가 발생했습니다.";
+            if (error.response && error.response.data) {
+                errorMessage = error.response.data.replace(/&lt;br&gt;/g, '<br>').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+            }
+            swal.fire({
+                title: "오류",
+                html: errorMessage,
+                icon: "error",
+                confirmButtonText: "확인"
+            });
+        });      
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById("predict_offender_location_form").addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        axios.post('/predict_offender_location', formData)
+        .then(function(response) {
+            const mapContainer = document.getElementById('map_container');
+            if (response.data.map_html) {
+                // 새로운 iframe 요소 생성
+                const iframe = document.createElement('iframe');
+                iframe.srcdoc = response.data.map_html;  // map HTML을 iframe의 srcdoc으로 삽입
+                iframe.width = '100%';
+                iframe.height = '600px';
+                iframe.style.border = 'none';
+    
+                // 기존 콘텐츠를 지우고 iframe 추가
+                mapContainer.innerHTML = '';
+                mapContainer.appendChild(iframe);
+                console.log("Map successfully loaded into #map-container");
+            } else {
+                console.error("Map HTML is empty");
+            }
         })
         .catch(function(error) {
             console.error('Error:', error);

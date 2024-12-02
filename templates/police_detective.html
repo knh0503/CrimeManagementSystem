@@ -20,12 +20,9 @@
             <li id="enroll_evidence_menu">증거물 등록</a></li>
             <li id="enroll_witness_menu">증인 및 목격자 등록</a></li>
             <li id="enroll_victim_menu">피해자 등록</a></li>
+            <li id="predict_offender_location_menu">용의자 위치 정보 분석</a></li>
         </ul>
     </nav>  
-
-    <form action="/change">
-        <button id="change_button" type="submit">investigation 경찰 변경</button>
-    </form>
 
     <div id = "view_police_investigation" class="container">
         <form id = "police_investigation_form">
@@ -93,8 +90,10 @@
             <label for="name">성함을 입력해주세요</label>
             <input type="text" name="name" id="name" required>
             <label for="gender">성별을 입력해주세요</label>
-            <label style="display: inline;"><input type="radio" name="gender" id="gender" value="M">남성</label>
-            <label style="display: inline;"><input type="radio" name="gender" id="gender" value="F">여성</label>
+            <div style="margin-bottom: 20px;">
+                <label style="display: inline;"><input type="radio" name="gender" id="gender" value="M">남성</label>
+                <label style="display: inline;"><input type="radio" name="gender" id="gender" value="F">여성</label>
+            </div>
             <label for="age">나이를 입력해주세요</label>
             <input type="text" name="age" id="age" required>
             <button id="enroll_evidence_button" type="submit">목격자 등록</button>
@@ -109,12 +108,40 @@
             <label for="name">성함을 입력해주세요</label>
             <input type="text" name="name" id="name" required>
             <label for="gender">성별을 입력해주세요</label>
-            <label style="display: inline;"><input type="radio" name="gender" id="gender" value="M">남성</label>
-            <label style="display: inline;"><input type="radio" name="gender" id="gender" value="F">여성</label>
+            <div style="margin-bottom: 20px;">
+                <label style="display: inline;"><input type="radio" name="gender" id="gender" value="M">남성</label>
+                <label style="display: inline;"><input type="radio" name="gender" id="gender" value="F">여성</label>
+            </div>
             <label for="age">나이를 입력해주세요</label>
             <input type="text" name="age" id="age" required>
             <button id="enroll_evidence_button" type="submit">피해자 등록</button>
         </form>
+    </div>
+
+    <div id="predict_offender_location" class="container">
+        <form id = "predict_offender_location_form">
+            <h2>용의자의 신상정보 및 이전 위치 정보를 사용하여 이동경로를 모니터링합니다.</h3>
+            <label for="age">나이를 입력해주세요</label>
+            <input type="text" name="age" id="age" required>
+            <label for="gender">성별을 입력해주세요</label>
+            <div style="margin-bottom: 20px;">
+                <label style="display: inline;"><input type="radio" name="gender" id="gender" value="M">남성</label>
+                <label style="display: inline;"><input type="radio" name="gender" id="gender" value="F">여성</label>
+            </div>
+            <label for="height">신장을 입력해주세요</label>
+            <input type="text" name="height" id="height" required>
+            <label for="weight">체중을 입력해주세요</label>
+            <input type="text" name="weight" id="weight" required>
+            <label for="prev_lat">이전 위치(위도)를 입력해주세요</label>
+            <input type="text" name="prev_lat" id="prev_lat" required>
+            <label for="prev_long">이전 위치(경도)를 입력해주세요</label>
+            <input type="text" name="prev_long" id="prev_long" required>
+            <button id="predict_offender_location_button" type="submit">입력 완료</button>
+        </form>
+
+        <div id="map_container">
+            <!-- Flask에서 전달한 지도 HTML을 표시 -->
+        </div>
     </div>
 
 </body>

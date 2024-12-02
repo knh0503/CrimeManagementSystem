@@ -6,6 +6,8 @@ import string
 import joblib
 from datetime import datetime, timedelta
 import pandas as pd
+import numpy as np
+import folium
 
 global alert_msg
 
@@ -14,7 +16,11 @@ app.secret_key = '1234'
 
 # crime_predictor_model 로드
 with open("crime_predictor_model.pkl","rb") as f:
-    model = joblib.load(f)
+    crime_model = joblib.load(f)
+
+# offender_location_predict 로드
+with open("offender_location_predict.pkl","rb") as f:
+    location_model = joblib.load(f)
 
 def connectDB(USER,pwd):
     global conn,cur
@@ -451,26 +457,6 @@ def get_week_of_month(date_obj):
     week_number = (delta_days // 7) + 1
     return week_number
 
-def predict_crime_count(region, month, week, day_of_week):
-
-    # 요일을 원하는 순서로 인코딩 (일월화수목금토 = 0123456)
-    day_mapping = {
-        'Sunday' : 0,
-        'Monday' : 1,
-        'Tuesday' : 2,
-        'Wednesday' : 3,
-        'Thursday' : 4,
-        'Friday' : 5,
-        'Saturday' : 6
-    }
-
-    # 요일을 인코딩된 숫자로 변환
-    day_encoded = day_mapping[day_of_week]
-
-    # 예측 수행
-    prediction = model.predict([[region, month, week, day_encoded]])[0]
-    return round(prediction, 2)
-
 @app.route("/crime_risk_prediction", methods=['POST'])
 @with_transaction
 def crime_risk_prediction(cur):
@@ -504,7 +490,7 @@ def crime_risk_prediction(cur):
     input_data = pd.DataFrame([[region, month, week_number, day_encoded]], columns=feature_names)
 
     # 예측 수행
-    prediction = model.predict(input_data)[0]
+    prediction = crime_model.predict(input_data)[0]
     result = round(prediction, 2)
     
     # 범죄 횟수 통계 : 25% : 15회, 50%: 30회, 75%:65회
@@ -705,6 +691,65 @@ def change(cur):
         print(inv_id, random_police_id)
 
     return "success"
+
+def predict_location_model(age, gender, height, weight, prev_lat, prev_long):
+
+    gender_mapping = {"M":0, "F":1}
+    gender_encoded = gender_mapping[gender]
+
+# 특성 이름을 명시적으로 지정
+    X_pred = pd.DataFrame([
+        [int(age), gender_encoded, float(height), float(weight), float(prev_lat), float(prev_long)],
+    ], columns=['age', 'gender_encoded', 'height', 'weight', 'prev_lat', 'prev_long'])
+
+    # 예측 수행
+    prediction = location_model.predict(X_pred)[0]
+    return np.round(prediction, 2)
+
+@app.route("/predict_offender_location", methods=['POST'])
+@with_transaction
+def predict_offender_location(cur):
+    age = request.form['age']
+    gender = request.form['gender']
+    height = request.form['height']
+    weight = request.form['weight']
+    prev_lat = request.form['prev_lat']
+    prev_long = request.form['prev_long']
+
+    result = predict_location_model(age, gender, height, weight, prev_lat, prev_long)
+    latitude, longitude = result[0], result[1]
+
+    # region_data.csv 파일 읽기
+    region_data = pd.read_csv('region_data.csv')
+    
+    # 서울 중심 좌표
+    seoul_center = [37.5665, 126.9780]
+
+    # 지도 생성 및 마커 추가
+    m = folium.Map(location=seoul_center, zoom_start=1)
+    for index, row in region_data.iterrows():
+        if (-90 <= row['latitude'] <= 90) and (-180 <= row['longitude'] <= 180):
+            folium.Marker(
+                location=[row['latitude'], row['longitude']],
+                popup=f"Region {row['id']}",
+                tooltip=f"Region {row['id']}"
+            ).add_to(m)
+    
+    folium.Marker(
+        location=[latitude, longitude],
+        popup=f"용의자 추정 위치",
+        tooltip=f"용의자 추정 위치"
+        ).add_to(m)
+
+    # 지도 HTML 파일로 저장하고 내용을 읽기
+    m.save('templates/predict_offender_location_map.html')
+    with open('templates/predict_offender_location_map.html', 'r', encoding='utf-8') as f:
+        map_html = f.read()
+
+    # 지도와 예측된 위치를 JSON으로 반환
+    return jsonify({'latitude': latitude,
+                    'longitude': longitude,
+                    'map_html': map_html})
 
 ############################3
 # Citizen
