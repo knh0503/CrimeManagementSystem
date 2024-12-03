@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const msg = response.data.msg;
             const region = response.data.region;
             if (flag == 'success') {
+                document.getElementById("select_container").style.display = "flex";
                 document.getElementById('region').value = region;
                 swal.fire({
                     html: msg.replace(/&lt;br&gt;/g, '<br>').replace(/&lt;/g, '<').replace(/&gt;/g, '>'),
@@ -225,3 +226,68 @@ document.addEventListener('DOMContentLoaded', function() {
         });      
     });
 });
+
+function crime_data_lookup() {
+    document.getElementById("inquiry_crime_data").style.display = "block";
+    document.getElementById("inquiry_crime_form").style.display = "none";
+    document.getElementById("inquiry_crime_table").style.display = "none";
+
+    const region = document.getElementById('region').value;
+    axios.post('/crime_data_lookup', {
+        region : region
+    })
+    .then(function (response) {
+        // 그래프로 보여주기
+        const year_list = response.data.year_crime_data.map(item => item.year);
+        const year_cnt_list = response.data.year_crime_data.map(item => item.count);
+        let year_chart = document.getElementById('year_chart');
+        let myChart = new Chart(year_chart, {
+            type: 'bar',
+            data: {
+              labels: year_list,
+              datasets: [
+                {
+                  label: 'year_cnt',
+                  data: year_cnt_list,
+                }
+              ]
+            },
+          });
+
+          const month_list = response.data.month_crime_data.map(item => item.month);
+          const month_cnt_list = response.data.month_crime_data.map(item => item.count);
+          let month_chart = document.getElementById('month_chart');
+          let myChart2 = new Chart(month_chart, {
+              type: 'bar',
+              data: {
+                labels: month_list,
+                datasets: [
+                  {
+                    label: 'month_cnt',
+                    data: month_cnt_list,
+                  }
+                ]
+              },
+            });
+    })
+    .catch(function(error) {
+        console.error('Error:', error);
+        let errorMessage = "오류가 발생했습니다.";
+        if (error.response && error.response.data) {
+            errorMessage = error.response.data.replace(/&lt;br&gt;/g, '<br>').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+        }
+        swal.fire({
+            title: "오류",
+            html: errorMessage,
+            icon: "error",
+            confirmButtonText: "확인"
+        });
+    }); 
+
+}
+
+function crime_record_lookup() {
+    document.getElementById("inquiry_crime_data").style.display = "none";
+    document.getElementById("inquiry_crime_form").style.display = "block";
+    document.getElementById("inquiry_crime_table").style.display = "none";
+}

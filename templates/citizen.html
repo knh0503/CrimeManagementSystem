@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style_police_manager.css') }}">
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="{{ url_for('static', filename='script_citizen.js') }}" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>   
     <title>Citizen</title>
 </head>
 <body>
@@ -31,7 +32,23 @@
             <button id="check_region_button" type="submit">입력</button>
         </form>
         <br>
-        <form id = 'inquiry_crime_form'>
+
+        <div class="select_container" id="select_container" style="display: none;">
+            <div class="select_box" id="select_box" onclick="crime_data_lookup()">
+                범죄 통계 조회
+            </div>
+            <div class="select_box" id="select_box" onclick="crime_record_lookup()">
+                범죄 기록 조회
+            </div>
+        </div>
+        <br>
+
+        <div id = "inquiry_crime_data" style="display: none;">
+            <canvas id="year_chart"></canvas>
+            <canvas id="month_chart"></canvas>
+        </div>
+
+        <form id = 'inquiry_crime_form' style="display: none;">
             <input type="hidden" name="region" id="region">
             <label for="crime_type">조회할 범죄 유형을 선택해주세요 : </label>
             <select id="crime_type" name="crime_type" style="width: 150px;">
@@ -53,6 +70,8 @@
             <input type="date" name="end_date" id="end_date" required>
             <button id = 'crime_type_button' type="submit">선택</button>
         </form>
+        <br>
+
         <div class = "table_container">
             <table class="tg" id = "inquiry_crime_table" style="display: none;">
                 <thead>
@@ -121,7 +140,7 @@
         <br>
         <div class = "table_container">
             <table class="tg" id = "witness_victim_inquiry_crime_table" style="display: none;">
-                <h3>범죄 정보</h3>
+                <caption>범죄 정보</caption>
                 <thead>
                     <tr>
                         <th class = "tg-7btt">ID</th>
@@ -139,7 +158,7 @@
         
         <div class = "table_container">
             <table class="tg" id = "witness_victim_inquiry_offender_table" style="display: none;">
-                <h3>용의자 정보</h3>
+                <caption>용의자 정보</caption>
                 <thead>
                     <tr>
                         <th class = "tg-7btt">이름</th>

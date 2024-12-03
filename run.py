@@ -961,6 +961,42 @@ def witness_victim_inquiry(cur):
 
     return jsonify(result)
 
+
+@app.route('/crime_data_lookup', methods=['POST'])
+@with_transaction
+def crime_data_lookup(cur):
+    data = request.get_json()
+    region = data.get('region')
+
+    # 연도별 범죄 통계
+    cur.execute(f"""select extract(year from date) as region_year,
+                count(*) as cnt
+                from crime c
+                where region_id = {region}
+                group by region_year
+                order by region_year;
+    """)
+    data = cur.fetchall()
+    year_crime_data = [{"year": int(row[0]), "count": row[1]} for row in data]
+
+    # 월별 범죄 통계
+    cur.execute(f"""select extract(month from date) as region_month,
+                count(*) as cnt
+                from crime c
+                where region_id = {region}
+                group by region_month
+                order by region_month;
+    """)
+    data = cur.fetchall()
+    month_crime_data = [{"month": int(row[0]), "count": row[1]} for row in data]
+    
+    crime_data = {
+        'year_crime_data'           :   year_crime_data,
+        'month_crime_data'    :   month_crime_data
+    }
+
+    return jsonify(crime_data)
+
 ####################################
 ## Offender
 
