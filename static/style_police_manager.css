@@ -245,3 +245,19 @@ caption {
     cursor: pointer;
     transform: translateY(-5px); /* 마우스를 올렸을 때 살짝 떠오르는 효과 */
   }
+
+  .inquiry_crime_data {
+    display: flex; /* 가로로 나란히 배치 */
+    width: 100%; /* 전체 너비 */
+    height: 100%; /* 원하는 높이 설정 */
+  }
+  
+  .chart {
+    flex : 1;
+    padding : 10px;
+  }
+
+  #year_chart, #month_chart {
+    width: 100% !important; /* 컨테이너 전체 너비 차지 */
+    height: 100% !important; /* 컨테이너 전체 높이 차지 */
+}

@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function crime_data_lookup() {
-    document.getElementById("inquiry_crime_data").style.display = "block";
+    document.getElementById("inquiry_crime_data").style.display = "flex";
     document.getElementById("inquiry_crime_form").style.display = "none";
     document.getElementById("inquiry_crime_table").style.display = "none";
 
@@ -258,7 +258,7 @@ function crime_data_lookup() {
           const month_cnt_list = response.data.month_crime_data.map(item => item.count);
           let month_chart = document.getElementById('month_chart');
           let myChart2 = new Chart(month_chart, {
-              type: 'bar',
+              type: 'line',
               data: {
                 labels: month_list,
                 datasets: [
